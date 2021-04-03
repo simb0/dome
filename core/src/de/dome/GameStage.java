@@ -27,6 +27,7 @@ public class GameStage extends Stage {
     float accumulator = 0;
     private Box2DDebugRenderer debugRenderer;
     private PhysicsShapeCache physicsBodies;
+    private Rocket rocket;
 
     public GameStage() {
         super(new ExtendViewport(50,50));
@@ -37,7 +38,7 @@ public class GameStage extends Stage {
     private void setupWorld() {
         Gdx.input.setInputProcessor(this);
         Box2D.init();
-        world = new World(new Vector2(0, -10*SCALE), true);
+        world = new World(new Vector2(0, -10), true);
         debugRenderer = new Box2DDebugRenderer();
 
         setupBackGround();
@@ -52,8 +53,13 @@ public class GameStage extends Stage {
     @Override
     public void draw() {
         super.draw();
+        checkCollision();
         stepWorld();
         debugRenderer.render(world, this.getCamera().combined);
+    }
+
+    private void checkCollision() {
+        radar.checkCol(rocket);
     }
 
     private void stepWorld() {
@@ -95,7 +101,8 @@ public class GameStage extends Stage {
     private void setupRocket(PhysicsShapeCache physicsBodies, World world) {
         Texture backGroundTexture = new Texture("rocket.png");
         backGroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        addActor(new Rocket(backGroundTexture, "rocket", physicsBodies, world));
+        rocket = new Rocket(backGroundTexture, "rocket", physicsBodies, world);
+        addActor(rocket);
     }
 
     @Override

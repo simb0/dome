@@ -34,7 +34,7 @@ public class Radar extends Actor {
         int FRAME_ROWS = 1;
         setHeight(64);
         setWidth(64);
-        this.setPosition(43,7.7f);
+        this.setPosition(43, 7.7f);
         this.setScale(GameStage.SCALE, GameStage.SCALE);
 
         TextureRegion[][] tmp = TextureRegion.split(walkSheet,
@@ -63,7 +63,7 @@ public class Radar extends Actor {
         reg = walkAnimation.getKeyFrame(stateTime, true);
 
         circle.radius += 0.8;
-        if(circle.radius > 50)
+        if (circle.radius > 30)
             circle.radius = 0;
     }
 
@@ -73,10 +73,34 @@ public class Radar extends Actor {
 
         Color color = getColor();
         batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-        batch.draw(reg, getX(), getY(), getOriginX(), getOriginY(),getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        batch.draw(reg, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
     }
 
     public void drawShape(ShapeRenderer shapeRenderer) {
         shapeRenderer.circle(circle.x, circle.y, circle.radius);
+    }
+
+    public void checkCol(Rocket rocket) {
+        if(circleRectCollision(new Vector2(circle.x, circle.y), new Vector2(rocket.getSprite().getBoundingRectangle().x, rocket.getSprite().getBoundingRectangle().y),
+                circle.radius, rocket.getSprite().getBoundingRectangle().width, rocket.getSprite().getBoundingRectangle().height)) {
+            System.out.println("Help rocket incoming!");
+        }
+    }
+
+    private Boolean circleRectCollision(Vector2 circleCenter, Vector2 rectCenter,
+                                        float radius, float width, float height) {
+        float distanceY = Math.abs(circleCenter.y - rectCenter.y);
+        if (distanceY > (height / 2 + radius)) return false;
+
+        float distanceX = Math.abs(circleCenter.x - rectCenter.x);
+        if (distanceX > (width / 2 + radius)) return false;
+
+        if (distanceX <= (width / 2)) return true;
+        if (distanceY <= (height / 2)) return true;
+
+        float a = distanceX - width / 2;
+        float b = distanceY - height / 2;
+        float cSqr = a * a + b * b;
+        return (cSqr <= (radius * radius));
     }
 }

@@ -26,8 +26,11 @@ public class Rocket extends Actor {
         this.physicsBodies = physicsBodies;
         this.world = world;
         sprite = new Sprite(texture);
+        spritePos(0, 5);
+    }
 
-        spritePos(10, 5);
+    public Sprite getSprite() {
+        return sprite;
     }
 
     public void spritePos(float x, float y){
@@ -44,10 +47,14 @@ public class Rocket extends Actor {
         setBounds(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
 
         body = physicsBodies.createBody("rocket", world, SCALE, SCALE);
-        body.setBullet(false);
+        MassData massData = new MassData();
+        massData.mass = 1;
+
+        body.setMassData(massData);
         body.setType(BodyDef.BodyType.DynamicBody);
         body.setTransform(getX(), getY(), 0);
-        body.applyForce(100.0f, 100.0f, 10 * SCALE, 0, true);
+        body.applyForce(new Vector2(300,1000), new Vector2(25, 0),true);
+        body.setAngularVelocity(-1);
     }
 
     @Override
