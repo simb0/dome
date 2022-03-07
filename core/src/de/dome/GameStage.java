@@ -1,11 +1,11 @@
 package de.dome;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.utils.ShapeCache;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Box2D;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -24,10 +24,13 @@ public class GameStage extends Stage {
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
 
+    private boolean pause = false;
+
     float accumulator = 0;
     private Box2DDebugRenderer debugRenderer;
     private PhysicsShapeCache physicsBodies;
     private Rocket rocket;
+    private Defender defender;
 
     public GameStage() {
         super(new ExtendViewport(50,50));
@@ -44,22 +47,43 @@ public class GameStage extends Stage {
         setupBackGround();
         setupCity();
         setupRadar();
+        setupGrid();
+        setupDefender();
 
         physicsBodies = new PhysicsShapeCache("rocket.xml");
         setupRocket(physicsBodies, world);
     }
 
+    private void setupDefender() {
+        Texture backGroundTexture = new Texture("flak.png");
+        backGroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        defender = new Defender(backGroundTexture, "flak", world);
+        addActor(defender);
+        defender.shootAt(11,10);
+    }
+
+    @Override
+    public void act(float delta) {
+        if(pause)
+            return;
+        super.act(delta);
+    }
 
     @Override
     public void draw() {
         super.draw();
-        checkCollision();
-        stepWorld();
+        if(!pause) {
+            checkCollision();
+            stepWorld();
+        }
         debugRenderer.render(world, this.getCamera().combined);
     }
 
+
+
     private void checkCollision() {
-        radar.checkCol(rocket);
+//        if(radar.checkCol(rocket))
+//            pause = true;
     }
 
     private void stepWorld() {
@@ -89,6 +113,10 @@ public class GameStage extends Stage {
         backGroundTexture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         radar = new Radar(backGroundTexture, "radar");
         addActor(radar);
+    }
+
+    private void setupGrid() {
+        addActor(new GridActor("grid"));
     }
 
     private void setupCity() {

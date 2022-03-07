@@ -4,14 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class Radar extends Actor {
 
@@ -80,11 +77,12 @@ public class Radar extends Actor {
         shapeRenderer.circle(circle.x, circle.y, circle.radius);
     }
 
-    public void checkCol(Rocket rocket) {
+    public boolean checkCol(Rocket rocket) {
         if(circleRectCollision(new Vector2(circle.x, circle.y), new Vector2(rocket.getSprite().getBoundingRectangle().x, rocket.getSprite().getBoundingRectangle().y),
                 circle.radius, rocket.getSprite().getBoundingRectangle().width, rocket.getSprite().getBoundingRectangle().height)) {
-            System.out.println("Help rocket incoming!");
+            return true;
         }
+        return false;
     }
 
     private Boolean circleRectCollision(Vector2 circleCenter, Vector2 rectCenter,

@@ -53,7 +53,7 @@ public class Rocket extends Actor {
         body.setMassData(massData);
         body.setType(BodyDef.BodyType.DynamicBody);
         body.setTransform(getX(), getY(), 0);
-        body.applyForce(new Vector2(300,1000), new Vector2(25, 0),true);
+        body.applyForce(new Vector2(600,1300), new Vector2(25, 0),true);
         body.setAngularVelocity(-1);
     }
 
